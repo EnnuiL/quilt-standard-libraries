@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Quilt Project
+ * Copyright 2024 The Quilt Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,26 @@
 
 package org.quiltmc.qsl.item.setting.mixin.recipe_remainder;
 
-import java.util.Optional;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.BookCloningRecipe;
 import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
 
+import org.quiltmc.qsl.item.setting.api.RecipeRemainderLocation;
 import org.quiltmc.qsl.item.setting.api.RecipeRemainderProvider;
 
-@Mixin(RecipeManager.class)
-public class RecipeManagerMixin {
-	@Inject(method = "getRemainingStacks", at = @At(value = "RETURN", ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	public <C extends Inventory, T extends Recipe<C>> void interceptGetRemainingStacks(RecipeType<T> recipeType, C inventory, World world, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, Optional<Recipe<?>> optionalRecipe) {
+@Mixin(BookCloningRecipe.class)
+public abstract class BookCloningRecipeMixin implements Recipe<RecipeInputInventory> {
+	@Inject(method = "getRemainder(Lnet/minecraft/inventory/RecipeInputInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
+	private void interceptGetRemainingStacks(RecipeInputInventory inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir) {
 		cir.setReturnValue(
-				RecipeRemainderProvider.getRemainingStacks(inventory, optionalRecipe.get(), cir.getReturnValue())
+			RecipeRemainderProvider.getRemainingStacks(inventory, this, RecipeRemainderLocation.CRAFTING, cir.getReturnValue())
 		);
 	}
 }

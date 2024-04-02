@@ -43,6 +43,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import org.quiltmc.qsl.item.setting.api.RecipeRemainderLocation;
 import org.quiltmc.qsl.item.setting.api.RecipeRemainderLogicHandler;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
@@ -80,7 +81,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BlockEntity implem
 			ItemStack original = inventory.get(INPUT_SLOT).copy();
 
 			if (!original.isEmpty()) {
-				ItemStack remainder = RecipeRemainderLogicHandler.getRemainder(original, recipe).copy();
+				ItemStack remainder = RecipeRemainderLogicHandler.getRemainder(original, recipe, RecipeRemainderLocation.FURNACE_INGREDIENT).copy();
 				original.decrement(1);
 
 				if (!remainder.isEmpty() && ItemStack.canCombine(original, remainder)) {
@@ -111,6 +112,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BlockEntity implem
 				fuelStack,
 				amount,
 				recipe,
+				RecipeRemainderLocation.FURNACE_FUEL,
 				cast.inventory,
 				FUEL_SLOT,
 				blockEntity.getWorld(),
@@ -129,6 +131,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BlockEntity implem
 				inputStack,
 				amount,
 				recipe,
+				RecipeRemainderLocation.FURNACE_INGREDIENT,
 				inventory,
 				INPUT_SLOT,
 				remainder -> { // consumer only called when there are excess remainder items that can be dropped into the world
