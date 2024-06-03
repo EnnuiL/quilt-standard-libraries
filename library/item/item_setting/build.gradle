@@ -32,7 +32,7 @@ tasks.register('checkItemSettings') {
 	dependsOn jar
 
 	doLast {
-		def moduleJar = project.buildDir.toPath().resolve("devlibs/${qslModule.moduleName.get()}-${version}-dev.jar")
+		def moduleJar = project.layout.buildDirectory.file("devlibs/${qslModule.moduleName.get()}-${version}-dev.jar").get().asFile.toPath()
 
 		try (def moduleFs = FileSystems.newFileSystem(URI.create("jar:${moduleJar.toUri()}"), [create: false])) {
 			try (def mcFs = ClassAnalysisUtils.loadMinecraftJar(project)) {

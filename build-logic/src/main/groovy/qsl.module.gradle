@@ -146,7 +146,7 @@ loom {
 
 			// Enable the game test runner.
 			property("quilt.game_test", "true")
-			property("quilt.game_test.report_file", "${project.buildDir}/game_test/report.xml")
+			property("quilt.game_test.report_file", layout.buildDirectory.file("game_test/report.xml").get().asFile.path)
 			runDir("build/game_test")
 		}
 	}
