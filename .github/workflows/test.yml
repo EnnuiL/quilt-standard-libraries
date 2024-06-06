@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew :runAutoAllTestServer --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: Production Mods
+          name: Production Mods (Java ${matrix.java})
           path: |
             ./**/build/libs/
             !./build-logic/**
@@ -37,5 +37,5 @@ jobs:
             !./**/build/libs/*-testmod.jar
       - uses: actions/upload-artifact@v4
         with:
-          name: Test Mods
+          name: Test Mods (Java ${matrix.java})
           path: ./**/build/libs/*-testmod.jar
